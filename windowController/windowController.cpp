@@ -21,7 +21,7 @@ windowController::windowController()
 int windowController::initClass()
 {
 	int ret = 0;
-	ret = mTessApi.Init(NULL, "test", tesseract::OEM_DEFAULT);
+	ret = mTessApi.Init("../", "ver1", tesseract::OEM_DEFAULT);
 	if (ret < 0)
 	{
 		return ret;
