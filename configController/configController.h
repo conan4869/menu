@@ -24,7 +24,8 @@ private:
 public:
 	vector<char*> *mRectClass;		// 每一矩形框的候选类
 	vector<char*> *mRectLabelTextClass;		// 每一候选类的实际标签名
-	vector<int> *mRectClassSubLabel;	// 每一个矩形框对应的下级菜单类编号
+	int *mRectClassParentLabel;	// 每一个矩形框对应的上级菜单类编号
+	int *mRectClassLabelRank;	//	每个矩形框在矩形框树里的层次
 
 	vector<vector<char*>> *mRectClassVector;	//每一矩形框的候选类可变长度
 	vector<vector<char*>> *mRectLabelTextClassVector;		//每一候选类的实际标签名可变长度

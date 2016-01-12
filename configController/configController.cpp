@@ -34,10 +34,10 @@ int configController::writeFileRect(char* rectFile)
 		{
 			oFile << mRectClass[i][j] << " " << mRectLabelTextClass[i][j] << " ";
 		}
-		oFile << mRectClassSubLabel[i].size() << " ";
-		for (int j = 0; j < mRectClassSubLabel[i].size(); j++)
+		oFile << mRectClassLabelRank[i] << " ";
+		if (mRectClassLabelRank[i] != 0)
 		{
-			oFile << mRectClassSubLabel[i][j] << " ";
+			oFile << mRectClassParentLabel[i] << " ";
 		}
 		oFile << endl;
 	}
@@ -56,7 +56,14 @@ int configController::readFileRect()
 	mFile >> mRectCount;
 	mRectClass = new vector<char*>[mRectCount];
 	mRectLabelTextClass = new vector<char*>[mRectCount];
-	mRectClassSubLabel = new vector<int>[mRectCount];
+	mRectClassParentLabel = new int[mRectCount];
+	mRectClassLabelRank = new int[mRectCount];
+
+	for (int i = 0; i < mRectCount; i++)
+	{
+		mRectClassParentLabel[i] = 0;
+		mRectClassLabelRank[i] = -1;
+	}
 	mFile >> tempnum;
 	char tmp[256];
 	while (!mFile.eof())
@@ -93,16 +100,10 @@ int configController::readFileRect()
 				mRectLabelTextClass[index].push_back(tmpText);
 			}
 		}
-		int rectSubLabelCount = 0;
-		mFile >> rectSubLabelCount;
-		if (rectSubLabelCount != 0)
+		mFile >> mRectClassLabelRank[index];
+		if (mRectClassLabelRank[index] != 0)
 		{
-			for (int j = 0; j < rectSubLabelCount; j++)
-			{
-				int labeltmp = -1;
-				mFile >> labeltmp;
-				mRectClassSubLabel[index].push_back(labeltmp);
-			}
+			mFile >> mRectClassParentLabel[index];
 		}
 		
 		index++;

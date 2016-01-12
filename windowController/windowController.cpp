@@ -21,7 +21,7 @@ windowController::windowController()
 int windowController::initClass()
 {
 	int ret = 0;
-	ret = mTessApi.Init("../", "ver1", tesseract::OEM_DEFAULT);
+	ret = mTessApi.Init("../", "test", tesseract::OEM_DEFAULT);
 	if (ret < 0)
 	{
 		return ret;
@@ -37,7 +37,8 @@ int windowController::openVideo(char* filename)
 	totalFrames = vCapture.get(CV_CAP_PROP_FRAME_COUNT);
 	mvHeight = vCapture.get(CV_CAP_PROP_FRAME_HEIGHT);
 	mvWidth = vCapture.get(CV_CAP_PROP_FRAME_WIDTH);
-	vCapture.set(CV_CAP_PROP_POS_FRAMES, 634);
+//	vCapture.set(CV_CAP_PROP_POS_FRAMES, 634);
+	vCapture.set(CV_CAP_PROP_POS_FRAMES, 9050);
 
 	return 0;
 }
@@ -57,7 +58,7 @@ int windowController::readAnImage(Mat &image)
 	if (vCapture.isOpened())
 	{
 		newimg.copyTo(oldimg);
-		if (vCapture.read(newimg) < 0)
+		if (vCapture.read(newimg) < 0 || newimg.cols == 0 || newimg.rows == 0)
 		{
 			return -1;
 		}
@@ -87,10 +88,12 @@ int windowController::readConfigs(char *filename)
 	mConfig.readFileRect();
 	mRectResultText = new char *[mConfig.listRect()->size()];
 	mRectLabelText = new char *[mConfig.listRect()->size()];
+	mRectState = new int[mConfig.listRect()->size()];
 	for (int i = 0; i < mConfig.listRect()->size(); i++)
 	{
 		mRectResultText[i] = NULL;
 		mRectLabelText[i] = NULL;
+		mRectState[i] = 0;
 	}
 
 	return 0;
@@ -167,8 +170,9 @@ int windowController::findText()
 		Mat tmpMatGray;
 		cvtColor(tmpMat, tmpMatGray, CV_BGR2GRAY);
 		int nonZeros = countNonZero(tmpMatGray > 20);
-		if (nonZeros <= 10)
+		if (nonZeros <= 10 && mRectResultText[i] != NULL)
 		{
+			i++;
 			continue;
 		}
 
@@ -177,11 +181,15 @@ int windowController::findText()
  		mRectResultText[i] = tmpText;
 		if (classLabel < 0)
 		{
-			mRectLabelText[i] = "";
+			char * tmp = new char[1];
+			tmp[0] = '\0';
+			mRectLabelText[i] = tmp;
+			mRectState[i] = 0;
 		}
 		else
 		{
 			mRectLabelText[i] = mConfig.mRectLabelTextClass[i][classLabel];
+			mRectState[i] = 1;
 		}
 
 		i++;
@@ -272,6 +280,40 @@ int windowController::getTextNumber(char* &text, int number, char* &labelText)	/
 	text = mRectResultText[number];
 	labelText = mRectLabelText[number];
 	return 0;
+}
+
+int windowController::getActiveLabelNum()
+{
+	int index = -1, max = 0;
+	if (mConfig.listRect()->size() != 0)
+	{
+		int i = 0;
+		int *tmpState = new int[mConfig.listRect()->size()];
+		for (i = 0; i < mConfig.listRect()->size(); i++)
+		{
+			tmpState[i] = 0;
+		}
+		for (i = 0; i < mConfig.listRect()->size(); i++)
+		{
+
+			if (mRectState[i] == 1 && mConfig.mRectClassLabelRank[i] != 0)
+			{
+				tmpState[mConfig.mRectClassParentLabel[i]]++;
+			}
+		}
+		for (i = 0; i < mConfig.listRect()->size(); i++)
+		{
+			if (tmpState[i] > max)
+			{
+				index = i;
+				max = tmpState[i];
+			}
+
+		}
+		delete[] tmpState;
+	}
+
+	return index;
 }
 
 

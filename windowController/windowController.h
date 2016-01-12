@@ -36,6 +36,7 @@ private:
 
 	char ** mRectResultText;	//矩形框内分析结果文本
 	char ** mRectLabelText;		//矩形框内结果类别文本
+	int * mRectState;			//矩形框是否存在状态
 	
 	int frameCount;
 
@@ -69,4 +70,5 @@ public:
 	int addRectText(char* &text, int index, char* &labelText);	//增加矩形分析文本和类别文本
 	int updateRect(vector<Rect> &mListRect);
 	int addRectLabelText(char* &text, int index);	//增加矩形实际类别文本
+	int getActiveLabelNum();
 };

@@ -557,6 +557,14 @@ void CMenuStatisticDlg::OnTimer(UINT_PTR nIDEvent)
 		delete[] pWhar;
 	}
 
+	int tmpActiveNum = m_windowCon.getActiveLabelNum();
+//	if(tmpActiveNum != -1)
+	{
+		CString tmp;
+		tmp.Format(_T("%d"), tmpActiveNum);
+		GetDlgItem(IDC_STATIC_CATANAME)->SetWindowTextW(tmp);
+	}
+
 	switch (nIDEvent)
 	{
 	case 1:
