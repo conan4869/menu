@@ -62,7 +62,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opencv_core249d.lib;opencv_highgui249d.lib;opencv_imgproc249d.lib;liblept.lib;libtesseract.lib;windowController.lib;configController.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_core249d.lib;opencv_highgui249d.lib;opencv_imgproc249d.lib;libleptd.lib;libtesseract.lib;windowController.lib;configController.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Debug;..\3rdparty\tesseract\lib;..\3rdparty\opencv\x86\vc12\lib</AdditionalLibraryDirectories>
       <Profile>true</Profile>
     </Link>
